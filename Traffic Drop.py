@@ -39,6 +39,14 @@ sheet_config = {
 # =========================
 def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
     df["Period start time"] = pd.to_datetime(df["Period start time"])
+       # 1️⃣ Get LAST hour only
+    # -------------------------
+    last_hour = df["Period start time"].max()
+    df = df[df["Period start time"] == last_hour]
+
+    # -------------------------
+    # 2️⃣ Create yesterday time
+    # -------------------------
     df["yesterday_time"] = df["Period start time"] - pd.Timedelta(days=1)
 
     # Merge with yesterday's data
