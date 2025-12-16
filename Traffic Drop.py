@@ -53,18 +53,18 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
 
     merged = merged[merged[f"{availability_col}_today"] == 100]
 
-  drop_flag = False
+drop_flag = pd.Series(False, index=merged.index)
 for col in traffic_cols:
-        merged[f"{col}_drop_ratio"] = np.where(
-            merged[f"{col}_yesterday"] > 0,
-            merged[f"{col}_today"] / merged[f"{col}_yesterday"],
-            np.nan
-        )
+    merged[f"{col}_drop_ratio"] = np.where(
+        merged[f"{col}_yesterday"] > 0,
+        merged[f"{col}_today"] / merged[f"{col}_yesterday"],
+        np.nan
+    )
+    drop_flag |= (
+        (merged[f"{col}_yesterday"] > 0) &
+        (merged[f"{col}_drop_ratio"] <= drop_threshold)
+    )
 
-        drop_flag |= (
-            (merged[f"{col}_yesterday"] > 0) &
-            (merged[f"{col}_drop_ratio"] <= drop_threshold)
-        )
 
 
 
