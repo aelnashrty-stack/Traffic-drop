@@ -17,17 +17,17 @@ st.write("Compare same hour vs yesterday and detect ≥80% traffic drops with 10
 # Config
 # =========================
 sheet_config = {
-    "2G Performance": {
+    "2G performance": {
         "join_key": "Segment Name",
         "traffic_cols": ["TCH traffic sum in time"],
         "availability_col": "Cell avail accuracy 1s cellL"
     },
-    "3G Performance": {
+    "3G performance": {
         "join_key": "Cell Name",
         "traffic_cols": ["CS traffic - Erl", "All_Data_Traffic"],
         "availability_col": "Cell Availability, excluding blocked by user state (BLU)"
     },
-    "4G Performance": {
+    "4G performance": {
         "join_key": "Cell Name",
         "traffic_cols": ["Total LTE data volume, DL + UL"],
         "availability_col": "Cell Avail excl BLU"
