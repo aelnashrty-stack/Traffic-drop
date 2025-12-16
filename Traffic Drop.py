@@ -57,10 +57,9 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
 
 
     # Initialize a boolean Series for drops
+    
     drop_flag = pd.Series(False, index=merged.index)
 
-       merged = merged[merged[f"{col}_yesterday"] > 0]
- 
 
     for col in traffic_cols:
         merged[f"{col}_drop_ratio"] = np.where(
