@@ -7,6 +7,8 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
+import numpy as np
+
 
 st.set_page_config(page_title="Daily Traffic Drop Detector", layout="wide")
 
@@ -53,10 +55,15 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
 
     drop_flag = False
     for col in traffic_cols:
-        merged[f"{col}_drop_ratio"] = (
-            merged[f"{col}_today"] / merged[f"{col}_yesterday"]
-        )
-        drop_flag |= merged[f"{col}_drop_ratio"] <= drop_threshold
+      merged[f"{col}_drop_ratio"] = np.where(
+    merged[f"{col}_yesterday"] > 0,
+    merged[f"{col}_today"] / merged[f"{col}_yesterday"],
+    np.nan
+)
+   drop_flag |= (
+    (merged[f"{col}_yesterday"] > 0) &
+    (merged[f"{col}_drop_ratio"] <= drop_threshold)
+)
 
     violations = merged[drop_flag]
 
