@@ -64,12 +64,12 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
         # Safe division: ratio = NaN if yesterday is 0
         merged[f"{col}_drop_ratio"] = np.where(
             yesterday != 0,
-           (1-today / yesterday),
+           (yesterday-today)/yesterday,
             np.nan
         )
 
         # Update drop_flag where ratio is below threshold
-        drop_flag |= (merged[f"{col}_drop_ratio"] <= drop_threshold)
+        drop_flag |= (merged[f"{col}_drop_ratio"] >= drop_threshold)
 
     # Keep only violating rows
     violations = merged[drop_flag]
