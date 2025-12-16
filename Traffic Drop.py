@@ -54,6 +54,9 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
     # Filter only cells with 100% availability today
     merged = merged[merged[f"{availability_col}_today"] == 100]
 
+    merged = merged[merged[f"{col}_yesterday"] > 0]
+
+
     # Initialize a boolean Series for drops
     drop_flag = pd.Series(False, index=merged.index)
 
