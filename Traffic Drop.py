@@ -24,7 +24,7 @@ sheet_config = {
     },
     "3G performance": {
         "join_key": "WBTS name",
-        "traffic_cols": ["CS traffic - Erl", "All_Data_Traffic"],
+        "traffic_cols": ["CS traffic - Erl", "All_Data_Traffic_MB"],
         "availability_col": "Cell Availability, excluding blocked by user state (BLU)"
     },
     "4G performance": {
@@ -64,7 +64,7 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
         # Safe division: ratio = NaN if yesterday is 0
         merged[f"{col}_drop_ratio"] = np.where(
             yesterday != 0,
-            today / yesterday,
+           (1-today / yesterday),
             np.nan
         )
 
