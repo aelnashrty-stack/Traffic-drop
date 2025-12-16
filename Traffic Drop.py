@@ -51,22 +51,23 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
         suffixes=("_today", "_yesterday")
     )
 
+    # Filter only cells with 100% availability today
     merged = merged[merged[f"{availability_col}_today"] == 100]
 
-drop_flag = pd.Series(False, index=merged.index)
-for col in traffic_cols:
-    merged[f"{col}_drop_ratio"] = np.where(
-        merged[f"{col}_yesterday"] > 0,
-        merged[f"{col}_today"] / merged[f"{col}_yesterday"],
-        np.nan
-    )
-    drop_flag |= (
-        (merged[f"{col}_yesterday"] > 0) &
-        (merged[f"{col}_drop_ratio"] <= drop_threshold)
-    )
+    # Initialize a boolean Series for drops
+    drop_flag = pd.Series(False, index=merged.index)
 
+    for col in traffic_cols:
+        merged[f"{col}_drop_ratio"] = np.where(
+            merged[f"{col}_yesterday"] > 0,
+            merged[f"{col}_today"] / merged[f"{col}_yesterday"],
+            np.nan
+        )
 
-
+        drop_flag |= (
+            (merged[f"{col}_yesterday"] > 0) &
+            (merged[f"{col}_drop_ratio"] <= drop_threshold)
+        )
 
     violations = merged[drop_flag]
 
@@ -84,6 +85,7 @@ for col in traffic_cols:
         ]
 
     return violations[keep_cols]
+
 
 def to_excel(results_dict):
     output = BytesIO()
