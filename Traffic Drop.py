@@ -57,11 +57,15 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
 
     # Compute drop ratios safely for each traffic column
     for col in traffic_cols:
-        merged[f"{col}_drop_ratio"] = np.divide(
-            merged[f"{col}_today"],
-            merged[f"{col}_yesterday"],
-            out=np.full_like(merged[f"{col}_today"], np.nan, dtype=float),
-            where=merged[f"{col}_yesterday"] != 0
+        # Ensure numeric float type
+        today = merged[f"{col}_today"].astype(float)
+        yesterday = merged[f"{col}_yesterday"].astype(float)
+
+        # Safe division: ratio = NaN if yesterday is 0
+        merged[f"{col}_drop_ratio"] = np.where(
+            yesterday != 0,
+            today / yesterday,
+            np.nan
         )
 
         # Update drop_flag where ratio is below threshold
