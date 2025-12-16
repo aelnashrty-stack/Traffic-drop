@@ -23,12 +23,12 @@ sheet_config = {
         "availability_col": "Cell avail accuracy 1s cellL"
     },
     "3G performance": {
-        "join_key": "Cell Name",
+        "join_key": "WBTS name",
         "traffic_cols": ["CS traffic - Erl", "All_Data_Traffic"],
         "availability_col": "Cell Availability, excluding blocked by user state (BLU)"
     },
     "4G performance": {
-        "join_key": "Cell Name",
+        "join_key": "LNBTS name",
         "traffic_cols": ["Total LTE data volume, DL + UL"],
         "availability_col": "Cell Avail excl BLU"
     }
