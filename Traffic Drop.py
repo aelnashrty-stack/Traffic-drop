@@ -60,7 +60,7 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold):
     merged[f"{col}_today"] / merged[f"{col}_yesterday"],
     np.nan
 )
-   drop_flag |= (
+   drop_flag = (
     (merged[f"{col}_yesterday"] > 0) &
     (merged[f"{col}_drop_ratio"] <= drop_threshold)
 )
