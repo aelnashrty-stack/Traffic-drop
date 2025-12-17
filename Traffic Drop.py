@@ -21,7 +21,7 @@ st.write(
 # =========================
 sheet_config = {
     "2G performance": {
-        "join_key": "Segment Name",
+        "join_key": "BCF name",
         "traffic_cols": ["TCH traffic sum in time"],
         "availability_col": "Cell avail accuracy 1s cellL"
     },
