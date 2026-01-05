@@ -40,9 +40,15 @@ sheet_config = {
 # =========================
 # Functions
 # =========================
-def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold,min_traffic=5):
+def process_sheet(
+    df,
+    join_key,
+    traffic_cols,
+    availability_col,
+    drop_threshold,
+    min_traffic=5
+):
 
-    # Ensure datetime
     df["Period start time"] = pd.to_datetime(df["Period start time"])
 
     # -------------------------
@@ -69,20 +75,21 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold,m
     )
 
     # -------------------------
-    # 4️⃣ Availability condition
+    # 4️⃣ Availability filter
     # -------------------------
-merged = merged[merged[f"{availability_col}_today"] == 100]
+    merged = merged[merged[f"{availability_col}_today"] == 100]
 
-# -------------------------
-# Minimum traffic filter
-# -------------------------
-traffic_mask = True
-for col in traffic_cols:
-    traffic_mask &= merged[f"{col}_yesterday"] >= min_traffic
-
-merged = merged[traffic_mask]
     # -------------------------
-    # 5️⃣ Traffic drop logic
+    # 5️⃣ Minimum traffic filter
+    # -------------------------
+    traffic_mask = pd.Series(True, index=merged.index)
+    for col in traffic_cols:
+        traffic_mask &= merged[f"{col}_yesterday"] >= min_traffic
+
+    merged = merged[traffic_mask]
+
+    # -------------------------
+    # 6️⃣ Traffic drop logic
     # Drop % = (Yesterday - Today) / Yesterday
     # -------------------------
     drop_flag = pd.Series(False, index=merged.index)
@@ -100,7 +107,7 @@ merged = merged[traffic_mask]
         drop_flag |= merged[f"{col}_drop_ratio"] >= drop_threshold
 
     # -------------------------
-    # 6️⃣ Output
+    # 7️⃣ Output
     # -------------------------
     violations = merged[drop_flag]
 
@@ -118,7 +125,6 @@ merged = merged[traffic_mask]
         ]
 
     return violations[keep_cols], last_hour
-
 
 def to_excel(results_dict):
     output = BytesIO()
