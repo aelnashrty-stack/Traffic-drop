@@ -71,12 +71,16 @@ def process_sheet(df, join_key, traffic_cols, availability_col, drop_threshold,m
     # -------------------------
     # 4️⃣ Availability condition
     # -------------------------
-    merged = merged[merged[f"{availability_col}_today"] == 100]
-   traffic_mask = True
-    for col in traffic_cols:
-        traffic_mask &= merged[f"{col}_yesterday"] >= min_traffic
+merged = merged[merged[f"{availability_col}_today"] == 100]
 
-    merged = merged[traffic_mask]
+# -------------------------
+# Minimum traffic filter
+# -------------------------
+traffic_mask = True
+for col in traffic_cols:
+    traffic_mask &= merged[f"{col}_yesterday"] >= min_traffic
+
+merged = merged[traffic_mask]
     # -------------------------
     # 5️⃣ Traffic drop logic
     # Drop % = (Yesterday - Today) / Yesterday
